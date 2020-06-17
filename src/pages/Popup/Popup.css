@@ -1,0 +1,141 @@
+.wrapper {
+  position: relative;
+  width: 400px;
+  min-height: 300px;
+}
+
+.bodyContainer {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.titleContainer {
+  background: linear-gradient(45deg, rgba(13,34,156,1) 0%, rgba(158,0,255,1) 100%);
+  width: 100%;
+  height: 35px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 25px;
+  color: #e8e8e8;
+}
+
+.reloadButton {
+  width: 20%;
+  height: 20px;
+  cursor: pointer;
+}
+
+.listContainer {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  overflow: hidden;
+}
+
+.listItem {
+  height: 30px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listItem:hover {
+  background-color: #f5f5f5;
+  transition: 0.5s;
+}
+
+.itemName {
+  font-size: 15px;
+  width: 200px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden
+}
+
+.status {
+  font-size: 10px;
+  color: #a3a3a3;
+}
+
+.inputContainer {
+  position: absolute;
+  width: 400px;
+  bottom: 10px;
+  height: 40px;
+  display: flex;
+  justify-content: right;
+}
+
+.urlInputContainer {
+  width: 83%;
+  margin-right: 10px;
+  font-size: 18px;
+  display: flex;
+  transition: 0.2s;
+}
+
+.urlInput {
+  width: 80%;
+  border-radius: 10px 0 0 10px;
+  border: none;
+  background-color : #dbdbdb;
+  font-size: 18px;
+  text-indent: 10px;
+  outline: none;
+}
+
+.urlInputSubmit {
+  width: 20%;
+  font-size: 20px;
+  color: #f5f5f5;
+  background: linear-gradient(45deg, rgba(13,34,156,1) 0%, rgba(158,0,255,1) 100%);
+  border-radius: 0 10px 10px 0;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.urlInputSubmit:hover {
+  opacity: 0.5;
+  border: none;
+}
+
+.urlAddButton {
+  width: 40px;
+  margin: 0 10px 0 10px;
+  font-size: 20px;
+  color: #f5f5f5;
+  background: linear-gradient(45deg, rgba(13,34,156,1) 0%, rgba(158,0,255,1) 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  outline: none;
+}
+
+.urlAddButton:hover {
+  opacity: 0.5;
+  border: none;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.updateButton {
+  width: fit-content;
+}
