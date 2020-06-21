@@ -25,19 +25,28 @@ const getHtmlHandler = async (url) => {
 
 const niceoppaiHandler = async (newUrl) => {
 	console.log('niceoppaiHandler runing')
+	const getAllPageUrl = (url) => {
+		const urlList = []
+		let cleanUrl = url.replace(/(\#\..+)/g,'').replace(/(chapter-list\/.\/)/g,'')
+		let isListNotEnded = false
+		for(let index=1;;index++){
+			const currentUrl = `${cleanUrl}chapter-list/${index}`
+			const html = await getHtmlHandler(currentUrl)
+			if(html==='') break;
+			const soup = new JSSoup(html)
+			const chapterList = soup.findAll('li', 'lng_')
+		}
+	}
+	getAllPageUrl(newUrl)
+	// const html = await getHtmlHandler(newUrl.replace(/#.XupCTbxxfDc || #.Xu9fz9hxfDe/g,''))
+	// console.log(html)
+	// const soup = new JSSoup(html)
+	// const chapterList = soup.findAll('li', 'lng_')
 
-	//remove #x
-// 	url = url.replace('http://www.','').split('/')
-// 	url.splice(url.length-1,url.length-1)
-
-	const html = await getHtmlHandler(newUrl.replace('#.XupCTbxxfDc',''))
-	const soup = new JSSoup(html)
-	const chapterList = soup.findAll('li', 'lng_')
-
-	chapterList.forEach((eachSoup) => {
-		const chapterName = eachSoup.find('b','val').getText()
-		console.log(chapterName)
-	})
+	// chapterList.forEach((eachSoup) => {
+	// 	const chapterName = eachSoup.find('b','val').getText()
+	// 	console.log(chapterName)
+	// })
 }
 
 const webScraper = (newUrl) => {
