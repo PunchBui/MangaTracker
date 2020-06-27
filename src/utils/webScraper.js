@@ -1,4 +1,5 @@
-import JSSoup from 'jssoup';
+import JSSoup from 'jssoup'
+import moment from 'moment'
 
 const getHtmlHandler = async (url) => {
 	const proxy = 'https://cors-anywhere.herokuapp.com/'
@@ -29,7 +30,8 @@ const niceoppaiHandler = async (url) => {
 	const mangaObject = {
 		title: '',
 		chapterList: [],
-		lastUpdated: new Date(),
+		lastUpdated: moment().format('MMMM DD YYYY, hh:mm a'),
+		source: cleanUrl,
 	}
 	for (let index = 1; ; index++) {
 		console.log(`running ${index} page`)
