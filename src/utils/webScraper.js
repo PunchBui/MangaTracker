@@ -13,49 +13,53 @@ const getHtmlHandler = async (url) => {
 	switch (response.status) {
 		// status "OK"
 		case 200:
-			htmlData = await response.text();
-			break;
+			htmlData = await response.text()
+			break
 		// status "Not Found"
 		case 404:
-			console.log('Not Found');
-			break;
+			console.log('Not Found')
+			break
 	}
 	return htmlData
 }
 
-const niceoppaiHandler = async (newUrl) => {
+const niceoppaiHandler = async (url) => {
 	console.log('niceoppaiHandler runing')
-	const getAllPageUrl = (url) => {
-		const urlList = []
-		let cleanUrl = url.replace(/(\#\..+)/g,'').replace(/(chapter-list\/.\/)/g,'')
-		let isListNotEnded = false
-		for(let index=1;;index++){
-			const currentUrl = `${cleanUrl}chapter-list/${index}`
-			const html = await getHtmlHandler(currentUrl)
-			if(html==='') break;
-			const soup = new JSSoup(html)
-			const chapterList = soup.findAll('li', 'lng_')
-		}
+	let cleanUrl = url.replace(/(\#\..+)/g, '').replace(/(chapter-list\/.\/)/g, '')
+	const mangaObject = {
+		title: '',
+		chapterList: [],
+		lastUpdated: new Date(),
 	}
-	getAllPageUrl(newUrl)
-	// const html = await getHtmlHandler(newUrl.replace(/#.XupCTbxxfDc || #.Xu9fz9hxfDe/g,''))
-	// console.log(html)
-	// const soup = new JSSoup(html)
-	// const chapterList = soup.findAll('li', 'lng_')
-
-	// chapterList.forEach((eachSoup) => {
-	// 	const chapterName = eachSoup.find('b','val').getText()
-	// 	console.log(chapterName)
-	// })
+	for (let index = 1; ; index++) {
+		console.log(`running ${index} page`)
+		const currentUrl = `${cleanUrl}chapter-list/${index}`
+		const html = await getHtmlHandler(currentUrl)
+		const soup = new JSSoup(html)
+		if (!mangaObject.chapterList?.length) {
+			mangaObject.title = soup.find('h1', 'ttl').text
+		}
+		const chapterList = soup.findAll('li', 'lng_')
+		if (!chapterList?.length) break
+		chapterList.forEach((eachChapter, i) => {
+			chapterList[i] = eachChapter.find('a', 'lst')
+			chapterList[i] = {
+				title: chapterList[i].attrs.href,
+				link: chapterList[i].attrs.title,
+			}
+		})
+		mangaObject.chapterList.push(...chapterList)
+	}
+	return(mangaObject)
 }
 
-const webScraper = (newUrl) => {
+const webScraper = async (newUrl) => {
 	switch (newUrl) {
 		case newUrl.match(/niceoppai/g):
 			break
 		default:
-			niceoppaiHandler(newUrl)
-			break
+			const mangaObject = await niceoppaiHandler(newUrl)
+			return(mangaObject)
 	}
 }
 

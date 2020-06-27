@@ -10,8 +10,9 @@ const Popup = () => {
 
   const [mangaList, setMangaList] = 'teasdasdasdasdst'
 
-  const urlHandler = () => {
-    webScraper(newUrl)
+  const urlHandler = async () => {
+    const mangaObject = await webScraper(newUrl)
+    console.log(mangaObject)
     setNewUrl('')
   }
   return (
@@ -32,7 +33,7 @@ const Popup = () => {
         <button onClick={() => setIsAdding(!isAdding)} className="urlAddButton">+</button>
         {isAdding && (
           <div className="urlInputContainer">
-            <input onChange={(e) => setNewUrl(e.target.value)} className="urlInput" />
+            <input onChange={(e) => setNewUrl(e.target.value)} value={newUrl} className="urlInput" />
             <button onClick={() => urlHandler()} className="urlInputSubmit">Add</button>
           </div>
         )}
