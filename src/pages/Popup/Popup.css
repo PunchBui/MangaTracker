@@ -45,6 +45,9 @@
   font-weight: bold;
   font-size: 25px;
   color: #e8e8e8;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .reloadButton {
@@ -64,8 +67,7 @@
 
 .listItem {
   position: relative;
-  height: 30px;
-  padding: 10px 5px;
+  padding: 16px 5px;
   cursor: pointer;
   border-radius: 5px;
   display: flex;
@@ -80,11 +82,28 @@
 
 .itemName {
   font-size: 15px;
-  width: 200px;
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
   overflow: hidden
+}
+
+.newChapter {
+  -moz-animation: newChapter 3s linear infinite;
+  animation: newChapter 3s linear infinite;
+  font-size: 15px;
+  font-weight: bold;
+  color: #ff3045;
+} 
+
+@keyframes newChapter {  
+  0% { color: #ff3045; }
+  100% { color: #ffffff; }
+}
+
+@-webkit-keyframes newChapter {
+  0% { color: #ff3045; }
+  100% { color: #ffffff; }
 }
 
 .status {

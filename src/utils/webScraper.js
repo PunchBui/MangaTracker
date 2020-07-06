@@ -44,10 +44,12 @@ const niceoppaiHandler = async (url) => {
 		const chapterList = soup.findAll('li', 'lng_')
 		if (!chapterList?.length) break
 		chapterList.forEach((eachChapter, i) => {
-			chapterList[i] = eachChapter.find('a', 'lst')
+      const link = eachChapter.find('a', 'lst')
+      const title = chapterList[i].find('b', 'val').text
 			chapterList[i] = {
-				title: chapterList[i].attrs.href,
-				link: chapterList[i].attrs.title,
+				title: title,
+        link: link.attrs.href,
+        readed: false,
 			}
 		})
 		mangaObject.chapterList.push(...chapterList)
