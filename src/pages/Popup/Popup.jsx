@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import reload from '../../assets/img/reload.svg';
 import remove from '../../assets/img/close.svg';
-import Greetings from '../../containers/Greetings/Greetings';
-import webScraper from '../../utils/webScraper'
+import webScraper, { updater, allUpdater } from '../../utils/webScraper'
 import './Popup.css';
 import { key, saveAsyncStorage, getAsyncStorage } from '../../utils/chrome'
 
@@ -54,7 +52,55 @@ const Popup = () => {
   }
 
   const selectChapterHandler = (item, index) => {
-    chrome.tabs.create({url: item.link})
+    const newSeenMangaObject = { ...currMangaObject }
+    newSeenMangaObject.chapterList[index].readed = true
+    console.log(newSeenMangaObject)
+    let replaceList = [...mangaObjectList]
+    for (let i = 0; i < replaceList; i++) {
+      if (currMangaObject === replaceList[i]) {
+        replaceList[i] = newSeenMangaObject
+        break
+      }
+    }
+    setCurrMangaObject(newSeenMangaObject)
+    setMangaObjectList(replaceList)
+    saveAsyncStorage(key.mangaList, [...replaceList])
+    chrome.tabs.create({ url: item.link })
+  }
+
+  const seenAllHandler = () => {
+    const seenAllMangaObject = { ...currMangaObject }
+    seenAllMangaObject.chapterList.forEach(item => {
+      if (!item.readed) {
+        item.readed = true
+      }
+    })
+    let replaceList = [...mangaObjectList]
+    for (let i = 0; i < replaceList; i++) {
+      if (currMangaObject === replaceList[i]) {
+        replaceList[i] = seenAllMangaObject
+        break
+      }
+    }
+    setCurrMangaObject(seenAllMangaObject)
+    setMangaObjectList(replaceList)
+    saveAsyncStorage(key.mangaList, [...replaceList])
+  }
+
+  const updateHandler = () => {
+    if (!selectedManga) {
+      updateAll()
+    } else {
+      updateManga()
+    }
+  }
+
+  const updateAll = () => {
+    allUpdater(mangaObjectList)
+  }
+
+  const updateManga = () => {
+    updater(currMangaObject)
   }
 
   const ChapterList = () => {
@@ -86,7 +132,10 @@ const Popup = () => {
     <div className="wrapper">
       <div className="titleContainer">
         <span className="title">{currTitle || 'Manga Tracker'}</span>
-        <img className="reloadButton" src={reload} />
+        <div className="rightContainer">
+          {selectedManga && <button className='readedAll' onClick={() => seenAllHandler()}>Seen all</button>}
+          <button className='reload' onClick={() => updateHandler()}>{selectedManga ? 'Update' : 'Update all'}</button>
+        </div>
       </div>
       <div className="bodyContainer">
         <div className="listContainer">
@@ -94,11 +143,11 @@ const Popup = () => {
         </div>
       </div>
       <div className="inputContainer">
-      <button onClick={() => floatBtnHandler()} className="urlAddButton">{selectedManga ? '<' : '+'}</button>
+        <button onClick={() => floatBtnHandler()} className="urlAddButton">{selectedManga ? '<' : '+'}</button>
         {isAdding && (
           <div className="urlInputContainer">
             <input onChange={(e) => setNewUrl(e.target.value)} value={newUrl} className="urlInput" />
-            <button onClick={() => urlHandler()} className="urlInputSubmit">ADD</button>
+            <button onClick={() => urlHandler()} className="urlInputSubmit">Add</button>
           </div>
         )}
       </div>
