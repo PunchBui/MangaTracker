@@ -14,7 +14,7 @@ const Popup = () => {
 
   useEffect(() => {
     getAsyncStorage(key.mangaList, (data) => {
-      setMangaObjectList(data)
+      data && setMangaObjectList(data)
     })
   }, [])
 
@@ -54,7 +54,11 @@ const Popup = () => {
   const selectChapterHandler = (item, index) => {
     const newSeenMangaObject = { ...currMangaObject }
     newSeenMangaObject.chapterList[index].readed = true
-    console.log(newSeenMangaObject)
+    let notReadedAllFlag = false
+    newSeenMangaObject.chapterList.forEach(item => {
+      if (!item.readed) notReadedAllFlag = true
+    })
+    if (!notReadedAllFlag) newSeenMangaObject.isReadedAll = true
     let replaceList = [...mangaObjectList]
     for (let i = 0; i < replaceList; i++) {
       if (currMangaObject === replaceList[i]) {
@@ -69,29 +73,30 @@ const Popup = () => {
   }
 
   const seenAllHandler = () => {
-    const seenAllMangaObject = { ...currMangaObject }
+    let seenAllMangaObject = { ...currMangaObject }
+    seenAllMangaObject.isReadedAll = true
     seenAllMangaObject.chapterList.forEach(item => {
       if (!item.readed) {
         item.readed = true
       }
     })
-    let replaceList = [...mangaObjectList]
-    for (let i = 0; i < replaceList; i++) {
-      if (currMangaObject === replaceList[i]) {
-        replaceList[i] = seenAllMangaObject
-        break
-      }
-    }
+    const index = mangaObjectList.indexOf(currMangaObject)
+    const replaceList = [...mangaObjectList]
+    replaceList[index] = seenAllMangaObject
+    
     setCurrMangaObject(seenAllMangaObject)
     setMangaObjectList(replaceList)
     saveAsyncStorage(key.mangaList, [...replaceList])
+    console.log(seenAllMangaObject)
   }
 
   const updateHandler = () => {
-    if (!selectedManga) {
-      updateAll()
-    } else {
-      updateManga()
+    if (mangaObjectList){
+      if (!selectedManga) {
+        updateAll()
+      } else {
+        updateManga()
+      }
     }
   }
 
@@ -99,8 +104,17 @@ const Popup = () => {
     allUpdater(mangaObjectList)
   }
 
-  const updateManga = () => {
-    updater(currMangaObject)
+  const updateManga = async () => {
+    const updatedMangaObject = await updater({...currMangaObject})
+    if (updatedMangaObject.chapterList[0] !== currMangaObject.chapterList[0]) {
+      const index = mangaObjectList.indexOf(currMangaObject)
+      const replaceList = mangaObjectList
+      replaceList[index] = updatedMangaObject
+      setMangaObjectList([...replaceList])
+      setCurrMangaObject(updatedMangaObject)
+      saveAsyncStorage(key.mangaList, [...replaceList])
+      console.log('new chapter found')
+    }
   }
 
   const ChapterList = () => {

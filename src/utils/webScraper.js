@@ -32,6 +32,7 @@ const niceoppaiHandler = async (url) => {
     chapterList: [],
     lastUpdated: moment().format('MMMM DD YYYY, hh:mm a'),
     source: cleanUrl,
+    isReadedAll: false,
   }
   for (let index = 1; ; index++) {
     console.log(`running ${index} page`)
@@ -57,11 +58,51 @@ const niceoppaiHandler = async (url) => {
   return (mangaObject)
 }
 
-export const updater = (mangaObject) => {
-
+const niceoppaiUpdateHandler = async (mangaObject) => {
+  console.log('niceoppaiUpdateHandler runing')
+  mangaObject.lastUpdated = moment().format('MMMM DD YYYY, hh:mm a')
+  mangaObject.isReadedAll = false
+  let allNewChapterList = []
+  getAllPage:
+  for (let index = 1; ; index++) {
+    console.log(`running ${index} page`)
+    const currentUrl = `${mangaObject.source}chapter-list/${index}`
+    const html = await getHtmlHandler(currentUrl)
+    const soup = new JSSoup(html)
+    const chapterList = soup.findAll('li', 'lng_')
+    let newChapterList = []
+    if (!chapterList?.length) break
+    for (let i = 0; i < chapterList.length; i++) {
+      const link = chapterList[i].find('a', 'lst').attrs.href
+      const title = chapterList[i].find('b', 'val').text
+      if (title === mangaObject.chapterList[0].title && link === mangaObject.chapterList[0].link) {
+        allNewChapterList.push(...newChapterList)
+        break getAllPage
+      }
+      newChapterList.push({
+        title: title,
+        link: link,
+        readed: false,
+      })
+    }
+    allNewChapterList.push(...newChapterList)
+  }
+  mangaObject.chapterList.unshift(...allNewChapterList)
+  return (mangaObject)
 }
 
-export const allUpdater = (mangaObjectList) => {
+export const updater = async (mangaObject) => {
+  const { source } = mangaObject
+  switch (source) {
+    case source.match(/niceoppai/g):
+      break
+    default:
+      const updatedMangaObject = await niceoppaiUpdateHandler(mangaObject)
+      return (updatedMangaObject)
+  }
+}
+
+export const allUpdater = async (mangaObjectList) => {
 
 }
 
