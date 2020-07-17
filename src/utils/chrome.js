@@ -7,7 +7,7 @@ export const saveAsyncStorage = (key, value) => {
     if (chrome.runtime.lastError) {
       alert(error)
     } else {
-      console.log('Value is set to ', value)
+      // console.log('Value is set to ', value)
     }
   });
 }

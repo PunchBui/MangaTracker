@@ -157,6 +157,17 @@
   color: #a3a3a3;
 }
 
+.readStatus {
+  position: absolute;
+  bottom: 2px;
+  left: 5px;
+  font-size: 10px;
+  -moz-animation: newChapter 3s linear infinite;
+  animation: newChapter 3s linear infinite;
+  font-weight: bold;
+  color: #ff3045;
+}
+
 .remove {
   width: 15px;
   margin-right: 10px;

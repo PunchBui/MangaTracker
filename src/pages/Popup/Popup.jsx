@@ -100,8 +100,12 @@ const Popup = () => {
     }
   }
 
-  const updateAll = () => {
-    allUpdater(mangaObjectList)
+  const updateAll = async () => {
+    const updatedMangaList = await allUpdater([...mangaObjectList])
+    // console.log(updatedMangaList)
+    setMangaObjectList([...updatedMangaList])
+    saveAsyncStorage(key.mangaList, [...updatedMangaList])
+    console.log('new chapter found')
   }
 
   const updateManga = async () => {
@@ -134,6 +138,7 @@ const Popup = () => {
       return (
         <div key={index} className="listItem" onClick={() => selectMangaHandler(index)}>
           <span className="itemName">{item.title}</span>
+          <span className="readStatus">{!item.isReadedAll && 'NEW!'}</span>
           <img className="remove" onClick={(e) => removeHandler(e, index)} src={remove} />
           <span className="status">{`Last updated: ${item.lastUpdated}`}</span>
         </div>
@@ -160,7 +165,12 @@ const Popup = () => {
         <button onClick={() => floatBtnHandler()} className="urlAddButton">{selectedManga ? '<' : '+'}</button>
         {isAdding && (
           <div className="urlInputContainer">
-            <input onChange={(e) => setNewUrl(e.target.value)} value={newUrl} className="urlInput" />
+            <input 
+              onChange={(e) => setNewUrl(e.target.value)}
+              value={newUrl}
+              className="urlInput"
+              placeholder="Place manga link here."
+            />
             <button onClick={() => urlHandler()} className="urlInputSubmit">Add</button>
           </div>
         )}

@@ -61,7 +61,6 @@ const niceoppaiHandler = async (url) => {
 const niceoppaiUpdateHandler = async (mangaObject) => {
   console.log('niceoppaiUpdateHandler runing')
   mangaObject.lastUpdated = moment().format('MMMM DD YYYY, hh:mm a')
-  mangaObject.isReadedAll = false
   let allNewChapterList = []
   getAllPage:
   for (let index = 1; ; index++) {
@@ -79,6 +78,7 @@ const niceoppaiUpdateHandler = async (mangaObject) => {
         allNewChapterList.push(...newChapterList)
         break getAllPage
       }
+      mangaObject.isReadedAll = false
       newChapterList.push({
         title: title,
         link: link,
@@ -88,7 +88,7 @@ const niceoppaiUpdateHandler = async (mangaObject) => {
     allNewChapterList.push(...newChapterList)
   }
   mangaObject.chapterList.unshift(...allNewChapterList)
-  return (mangaObject)
+  return ({...mangaObject})
 }
 
 export const updater = async (mangaObject) => {
@@ -103,7 +103,14 @@ export const updater = async (mangaObject) => {
 }
 
 export const allUpdater = async (mangaObjectList) => {
-
+  let replaceList = []
+  for await (const item of mangaObjectList) {
+    const updatedItem = await updater({...item})
+    console.log(updatedItem)
+    replaceList.push(updatedItem)
+  }
+  console.log(replaceList)
+  return (replaceList)
 }
 
 const webScraper = async (newUrl) => {
